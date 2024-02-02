@@ -60,30 +60,17 @@ long long modInverse(long long e, long long phiN) {
     return d;
 }
 
-long long modularMultiplication(long long c, long long d, long long n) {
-    long long result = 0;
-    c %= n;
+int decrypt(int c, int d, int n) {
+    int answer = 1;
+    c = c % n;
     while (d > 0) {
-        if (d & 1) {                                                        //check if d is odd, if so take it out and use recurrence
-            result = (result + c) % n;
+        if (d % 2 == 1) {
+            answer = (answer*c) % n;
         }
-        c = (2 * c) % n;
-        d >>= 1;                                                            //shift is equivalent to dividing by two, more efficient for big numbers
+        c = (c * c) % n;
+        d /= 2;
     }
-    return result;
-}
-
-long long decrypt(long long c, long long d, long long n) {           //Use recurrence recursively to make sure number doesnt get too big for large exponents
-    if (d == 0)
-        return 1;
-    if (d == 1)
-        return c % n;
-    long long halfPower = decrypt(c, d >> 1, n);                         //divide d by two to get 'half power' and square d instead
-    long long halfPowerSquared = modularMultiplication(halfPower, halfPower, n);
-    if (d & 1) {                                                        //if exponent is odd, take it out to be even and run even algorithm
-        return modularMultiplication(halfPowerSquared, c, n);
-    }
-    return halfPowerSquared;
+    return answer;
 }
 
 int main()
