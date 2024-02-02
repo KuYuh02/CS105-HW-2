@@ -60,18 +60,18 @@ long long modInverse(long long e, long long phiN) {
     return d;
 }
 
-// int decrypt(int c, int d, int n) {
-//     int answer = 1;
-//     c = c % n;
-//     while (d > 0) {
-//         if (d % 2 == 1) {
-//             answer = (answer*c) % n;
-//         }
-//         c = (c * c) % n;
-//         d /= 2;
-//     }
-//     return answer;
-// }
+int decrypt(int c, int d, int n) {
+    int answer = 1;
+    c = c % n;
+    while (d > 0) {
+        if (d % 2 == 1) {
+            answer = (answer*c) % n;
+        }
+        c = (c * c) % n;
+        d /= 2;
+    }
+    return answer;
+}
 
 int main()
 {   
