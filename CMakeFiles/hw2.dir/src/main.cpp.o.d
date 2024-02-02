@@ -110,4 +110,20 @@ CMakeFiles/hw2.dir/src/main.cpp.o: \
  /usr/include/c++/8/bits/locale_facets.tcc \
  /usr/include/c++/8/bits/basic_ios.tcc \
  /usr/include/c++/8/bits/ostream.tcc /usr/include/c++/8/istream \
- /usr/include/c++/8/bits/istream.tcc
+ /usr/include/c++/8/bits/istream.tcc /usr/include/c++/8/algorithm \
+ /usr/include/c++/8/utility /usr/include/c++/8/bits/stl_relops.h \
+ /usr/include/c++/8/bits/stl_algo.h \
+ /usr/include/c++/8/bits/algorithmfwd.h \
+ /usr/include/c++/8/bits/stl_heap.h /usr/include/c++/8/bits/stl_tempbuf.h \
+ /usr/include/c++/8/bits/stl_construct.h \
+ /usr/include/c++/8/bits/uniform_int_dist.h /usr/include/c++/8/limits \
+ /usr/include/c++/8/vector /usr/include/c++/8/bits/stl_uninitialized.h \
+ /usr/include/c++/8/bits/stl_vector.h \
+ /usr/include/c++/8/bits/stl_bvector.h /usr/include/c++/8/bits/vector.tcc \
+ /usr/include/c++/8/math.h /usr/include/c++/8/cmath /usr/include/math.h \
+ /usr/include/bits/math-vector.h /usr/include/bits/libm-simd-decl-stubs.h \
+ /usr/include/bits/flt-eval-method.h /usr/include/bits/fp-logb.h \
+ /usr/include/bits/fp-fast.h \
+ /usr/include/bits/mathcalls-helper-functions.h \
+ /usr/include/bits/mathcalls.h /usr/include/bits/mathcalls-narrow.h \
+ /usr/include/bits/iscanonical.h
