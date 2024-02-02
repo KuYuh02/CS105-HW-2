@@ -3,7 +3,6 @@
 #include <algorithm>
 #include <vector>
 #include <math.h>
-#include <sstream>
 
 using namespace std;
 
@@ -45,18 +44,19 @@ bool isPrime(long long n) {
 std::vector<int> findPrimeFactors(int n) {
     std::vector<int> primeFactors;
     for (int i = 2; i <= n/2; i++) {
-        if (n % i == 0 && isPrime(i) && isPrime(n/i) && i != (n/i)) {           //make sure both factors are prime and are not equal to each other
+        if (n % i == 0 && isPrime(i) && isPrime(n/i) && i != (n/i)) { //make sure both factors are prime and are not equal to each other
             primeFactors.push_back(i);  
             primeFactors.push_back(n/i);                                       //get second prime number by diving first by n
-            break;                                                             // We only need two prime factors
+            break;                                                                 // We only need two prime factors
         }
     }
+
     return primeFactors;
 }
 
 long long modInverse(long long e, long long phiN) {
     long long d = 0;
-    while ((e * d) % phiN != 1) {                                               //continue incrementing d until the product is congruent to 1 mod phi of n
+    while ((e * d) % phiN != 1) { //continue incrementing d until the product is congruent to 1 mod phi of n
         d++;
     }
     return d;
@@ -65,12 +65,8 @@ long long modInverse(long long e, long long phiN) {
 long long modularMultiplication(long long c, long long d, long long n) {
     long long result = 0;
     c %= n;
-long long modularMultiplication(long long c, long long d, long long n) {
-    long long result = 0;
-    c %= n;
     while (d > 0) {
-        if (d & 1) {        //check if d is odd, if so take it out and use recurrence
-            result = (result + c) % n;
+<<<<<<< HEAD
         if (d & 1) {        //check if d is odd, if so take it out and use recurrence
             result = (result + c) % n;
         }
@@ -117,6 +113,15 @@ long long decrypt(long long c, long long d, long long n) {           //Use recur
     }
     
     return halfPowerSquared;
+=======
+        if (d % 2 == 1) {
+            answer = (answer*c) % n;
+        }
+        c = (c * c) % n;
+        d /= 2;
+    }
+    return answer;
+>>>>>>> 27d73c5 (Update main)
 }
 
 int main()
@@ -153,24 +158,18 @@ int main()
     getline(cin, cipherText);
 
     //Part (ii)
-    if(!is_valid(e,n)){
-       cout << "Public key is not valid!" << endl;
-        return 0;                                                               //quit if invalid
+    if(is_valid(e,n)){
+        cout << "The public key you have entered is VALID!" << endl;
     }
-
-    //get ciphertext and convert the string input into integer for the decrypt algorithm to decrypt
-    string token;
-    for (char c : cipherText) {
-        if (isdigit(c)) {
-            token += c;
-        } else if (!token.empty()) {
-            cipherNumbers.push_back(stoi(token));
-            token.clear();
-        }
+    else{
+        cout << "INVALID PUBLIC KEY!!!" << endl;
+        return 0;                               //quit if invalid
     }
-    if (!token.empty()) {
-        cipherNumbers.push_back(stoi(token));
-    }
+    
+    cout << "Enter m (the number of characters in the message): " << endl;
+    cin >> m;
+    cout << "Enter cyphertext (c): ";
+    cin >> c;
 
     //Part (vi)
     vector<long long> factorsN = findPrimeFactors(n);
