@@ -94,16 +94,21 @@ int main()
     
 
     //Part (i)
-    //cout << "Enter e: " << endl;
-    cin >> e >> n;
-    //cout << "Enter n: " << endl;
-    //cin >> n;
+    cout << "Enter e: " << endl;
+    cin >> e;
+    cout << "Enter n: " << endl;
+    cin >> n;
+    if (isPrime(n)) {
+        cout << "n should not be a prime number in RSA. Please enter a composite number that is the product of two primes." << endl;
+        return 0;
+    }
 
 
-    //cout << "Enter m (the number of characters in the message): " << endl;
+
+    cout << "Enter m (the number of characters in the message): " << endl;
     cin >> m;
     cin.ignore();
-    //cout << "Enter ciphertext (c): ";
+    cout << "Enter ciphertext (c): ";
     getline(cin, cipherText);
 
     //Part (ii)
@@ -135,6 +140,8 @@ int main()
     cout  << p << " " << q << " " << phiN << " " << d << " " << endl;
     long long decrypted; 
 
+
+    cout << "Decrypted message as numbers " << endl;
     for (long long cipherNumber : cipherNumbers){
         decrypted = decrypt(cipherNumber, d, n);
         cout << decrypted << " ";
