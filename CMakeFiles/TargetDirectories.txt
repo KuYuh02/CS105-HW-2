@@ -1,3 +1,0 @@
-/data/home/csmajs/mdeg011/CS105-HW-2/CMakeFiles/hw2.dir
-/data/home/csmajs/mdeg011/CS105-HW-2/CMakeFiles/edit_cache.dir
-/data/home/csmajs/mdeg011/CS105-HW-2/CMakeFiles/rebuild_cache.dir
