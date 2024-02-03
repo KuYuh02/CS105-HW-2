@@ -4,7 +4,6 @@
 #include <vector>
 #include <math.h>
 #include <sstream>
-#include <sstream>
 
 using namespace std;
 
@@ -61,72 +60,71 @@ long long modInverse(long long e, long long phiN) {
     return d;
 }
 
-int decrypt(int c, int d, int n) {
-    int answer = 1; // This will hold the final answer
-    int base = c % n; // The 'base' starts as c modulo n
-
-    // The loop performs modular exponentiation by squaring
+long long modularMultiplication(long long c, long long d, long long n) {
+    long long result = 0;
+    c %= n;
     while (d > 0) {
-        if (d % 2 == 1) { // If the current power is odd
-            answer = (answer * base) % n; // Multiply the current answer by the base
+        if (d & 1) {                                                        //check if d is odd, if so take it out and use recurrence
+            result = (result + c) % n;
         }
-        base = (base * base) % n; // Square the base
-        d /= 2; // Divide the power by 2
+        c = (2 * c) % n;
+        d >>= 1;                                                            //shift is equivalent to dividing by two, more efficient for big numbers
     }
-    return answer;
+    return result;
 }
 
+long long decrypt(long long c, long long d, long long n) {           //Use recurrence recursively to make sure number doesnt get too big for large exponents
+    if (d == 0)
+        return 1;
+    if (d == 1)
+        return c % n;
+    long long halfPower = decrypt(c, d >> 1, n);                         //divide d by two to get 'half power' and square d instead
+    long long halfPowerSquared = modularMultiplication(halfPower, halfPower, n);
+    if (d & 1) {                                                        //if exponent is odd, take it out to be even and run even algorithm
+        return modularMultiplication(halfPowerSquared, c, n);
+    }
+    return halfPowerSquared;
+}
 
 int main()
 {   
-
-    // int e = 7;
-    // int n = 4453;
-    // int p = 61;
-    // int q = 73; 
-    // int phiN = 4320;
-    // int d = 3703;
-    // int m = 0;
-    int e, n, m, p, q, phiN, d;
-    int c;
-    long long decrypted;
-    std::string cipherText;
-    std::vector<int> cipherNumbers;
+    long long e, n, m, p, q, phiN, d, c;
+    string cipherText;
+    vector<long long> cipherNumbers;
     
 
     //Part (i)
-    cout << "Enter e: " << endl;
-    cin >> e;
-    cout << "Enter n: " << endl;
-    cin >> n;
+    //cout << "Enter e: " << endl;
+    cin >> e >> n;
+    //cout << "Enter n: " << endl;
+    //cin >> n;
 
-    if (isPrime(n)) {
-        cout << "n should not be a prime number in RSA. Please enter a composite number that is the product of two primes." << endl;
-        return 0;
-    }
 
-    //Part (ii)
-    if(is_valid(e,n)){
-        cout << "The public key you have entered is VALID!" << endl;
-    }
-    else if(!is_valid(e,n)){
-        cout << "INVALID PUBLIC KEY!!!" << endl;
-        return 0;                               //quit if invalid
-    }
-    
-    cout << "Enter m (the number of characters in the message): " << endl;
+    //cout << "Enter m (the number of characters in the message): " << endl;
     cin >> m;
-    cout << "Enter cyphertext (c): ";
-    cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    cin.ignore();
+    //cout << "Enter ciphertext (c): ";
     getline(cin, cipherText);
 
-
-    stringstream ss(cipherText);
-    int temp;
-    while (ss >> temp) {
-        cipherNumbers.push_back(temp);
+    //Part (ii)
+    if(!is_valid(e,n)){
+       cout << "Public key is not valid!" << endl;
+        return 0;                                                               //quit if invalid
     }
 
+    //get ciphertext and convert the string input into integer for the decrypt algorithm to decrypt
+    string token;
+    for (char c : cipherText) {
+        if (isdigit(c)) {
+            token += c;
+        } else if (!token.empty()) {
+            cipherNumbers.push_back(stoi(token));
+            token.clear();
+        }
+    }
+    if (!token.empty()) {
+        cipherNumbers.push_back(stoi(token));
+    }
 
     //Part (vi)
     vector<long long> factorsN = findPrimeFactors(n);
@@ -134,21 +132,16 @@ int main()
     q = factorsN[1];
     phiN =  (p-1)*(q-1);
     d = modInverse(e, phiN);
-    cout << "p: " << p << " and q: " << q << endl;
-    cout << "phi(n): " << phiN << endl;
-    cout << "d: " << d << endl;
+    cout  << p << " " << q << " " << phiN << " " << d << " " << endl;
+    long long decrypted; 
 
-    
-    
-    decrypted = decrypt(c, d, n);
-    
-    cout << "Cipher numbers: ";
-    for (const int& num : cipherNumbers) {
-        cout << num << " ";
+    for (long long cipherNumber : cipherNumbers){
+        decrypted = decrypt(cipherNumber, d, n);
+        cout << decrypted << " ";
     }
     cout << endl;
 
-    for (int cipherNumber : cipherNumbers){
+    for (long long cipherNumber : cipherNumbers){
         decrypted = decrypt(cipherNumber, d, n);
         switch(decrypted){
         case(7): cout << 'A' ; break;
@@ -182,10 +175,8 @@ int main()
         case(35): cout << ',' ; break;
         case(36): cout << '.' ; break;
         case(37): cout << "'"; break;
-            
         }
     }
-        
-
+    cout << endl;
     return 0;
 }
