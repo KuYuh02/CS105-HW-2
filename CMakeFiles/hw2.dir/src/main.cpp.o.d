@@ -1,5 +1,5 @@
 CMakeFiles/hw2.dir/src/main.cpp.o: \
-  /Users/randypham/Desktop/CS111-HW2/CS111-HW-2/src/main.cpp \
+  /Users/randypham/Desktop/CS111-HW-2/src/main.cpp \
   /Library/Developer/CommandLineTools/SDKs/MacOSX14.2.sdk/usr/include/c++/v1/iostream \
   /Library/Developer/CommandLineTools/SDKs/MacOSX14.2.sdk/usr/include/c++/v1/__assert \
   /Library/Developer/CommandLineTools/SDKs/MacOSX14.2.sdk/usr/include/c++/v1/__config \
