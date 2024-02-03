@@ -4,6 +4,7 @@
 #include <vector>
 #include <math.h>
 #include <sstream>
+#include <sstream>
 
 using namespace std;
 
@@ -61,57 +62,71 @@ long long modInverse(long long e, long long phiN) {
 }
 
 int decrypt(int c, int d, int n) {
-    int answer = 1;
-    c = c % n;
+    int answer = 1; // This will hold the final answer
+    int base = c % n; // The 'base' starts as c modulo n
+
+    // The loop performs modular exponentiation by squaring
     while (d > 0) {
-        if (d % 2 == 1) {
-            answer = (answer*c) % n;
+        if (d % 2 == 1) { // If the current power is odd
+            answer = (answer * base) % n; // Multiply the current answer by the base
         }
-        c = (c * c) % n;
-        d /= 2;
+        base = (base * base) % n; // Square the base
+        d /= 2; // Divide the power by 2
     }
     return answer;
 }
 
+
 int main()
 {   
-    long long e, n, m, p, q, phiN, d, c;
-    string cipherText;
-    vector<long long> cipherNumbers;
+
+    // int e = 7;
+    // int n = 4453;
+    // int p = 61;
+    // int q = 73; 
+    // int phiN = 4320;
+    // int d = 3703;
+    // int m = 0;
+    int e, n, m, p, q, phiN, d;
+    int c;
+    long long decrypted;
+    std::string cipherText;
+    std::vector<int> cipherNumbers;
     
 
     //Part (i)
-    //cout << "Enter e: " << endl;
-    cin >> e >> n;
-    //cout << "Enter n: " << endl;
-    //cin >> n;
+    cout << "Enter e: " << endl;
+    cin >> e;
+    cout << "Enter n: " << endl;
+    cin >> n;
 
-
-    //cout << "Enter m (the number of characters in the message): " << endl;
-    cin >> m;\
-    cin.ignore();
-    //cout << "Enter ciphertext (c): ";
-    getline(cin, cipherText);
+    if (isPrime(n)) {
+        cout << "n should not be a prime number in RSA. Please enter a composite number that is the product of two primes." << endl;
+        return 0;
+    }
 
     //Part (ii)
-    if(!is_valid(e,n)){
-       cout << "Public key is not valid!" << endl;
-        return 0;                                                               //quit if invalid
+    if(is_valid(e,n)){
+        cout << "The public key you have entered is VALID!" << endl;
+    }
+    else if(!is_valid(e,n)){
+        cout << "INVALID PUBLIC KEY!!!" << endl;
+        return 0;                               //quit if invalid
+    }
+    
+    cout << "Enter m (the number of characters in the message): " << endl;
+    cin >> m;
+    cout << "Enter cyphertext (c): ";
+    cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    getline(cin, cipherText);
+
+
+    stringstream ss(cipherText);
+    int temp;
+    while (ss >> temp) {
+        cipherNumbers.push_back(temp);
     }
 
-    //get ciphertext and convert the string input into integer for the decrypt algorithm to decrypt
-    string token;
-    for (char c : cipherText) {
-        if (isdigit(c)) {
-            token += c;
-        } else if (!token.empty()) {
-            cipherNumbers.push_back(stoi(token));
-            token.clear();
-        }
-    }
-    if (!token.empty()) {
-        cipherNumbers.push_back(stoi(token));
-    }
 
     //Part (vi)
     vector<long long> factorsN = findPrimeFactors(n);
@@ -119,16 +134,21 @@ int main()
     q = factorsN[1];
     phiN =  (p-1)*(q-1);
     d = modInverse(e, phiN);
-    cout  << p << " " << q << " " << phiN << " " << d << " " << endl;
-    long long decrypted; 
+    cout << "p: " << p << " and q: " << q << endl;
+    cout << "phi(n): " << phiN << endl;
+    cout << "d: " << d << endl;
 
-    for (long long cipherNumber : cipherNumbers){
-        decrypted = decrypt(cipherNumber, d, n);
-        cout << decrypted << " ";
+    
+    
+    decrypted = decrypt(c, d, n);
+    
+    cout << "Cipher numbers: ";
+    for (const int& num : cipherNumbers) {
+        cout << num << " ";
     }
     cout << endl;
 
-    for (long long cipherNumber : cipherNumbers){
+    for (int cipherNumber : cipherNumbers){
         decrypted = decrypt(cipherNumber, d, n);
         switch(decrypted){
         case(7): cout << 'A' ; break;
@@ -162,8 +182,10 @@ int main()
         case(35): cout << ',' ; break;
         case(36): cout << '.' ; break;
         case(37): cout << "'"; break;
+            
         }
     }
-    cout << endl;
+        
+
     return 0;
 }
