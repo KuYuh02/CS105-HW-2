@@ -73,17 +73,19 @@ long long modularMultiplication(long long c, long long d, long long n) {
     return result;
 }
 
-long long decrypt(long long c, long long d, long long n) {           //Use recurrence recursively to make sure number doesnt get too big for large exponents
+long long decrypt(long long c, long long d, long long n) {
     if (d == 0)
         return 1;
     if (d == 1)
         return c % n;
-    long long halfPower = decrypt(c, d >> 1, n);                         //divide d by two to get 'half power' and square d instead
-    long long halfPowerSquared = modularMultiplication(halfPower, halfPower, n);
-    if (d & 1) {                                                        //if exponent is odd, take it out to be even and run even algorithm
+    if (d % 2 == 0) {
+        long long halfPower = decrypt(c, d / 2, n);
+        return modularMultiplication(halfPower, halfPower, n);
+    } else {
+        long long halfPower = decrypt(c, d / 2, n);
+        long long halfPowerSquared = modularMultiplication(halfPower, halfPower, n);
         return modularMultiplication(halfPowerSquared, c, n);
     }
-    return halfPowerSquared;
 }
 
 int main()
