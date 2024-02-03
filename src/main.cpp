@@ -29,6 +29,7 @@ bool is_valid(long e, long n){
 }
 
 bool isPrime(long long n) {
+bool isPrime(long long n) {
     if (n <= 1) {
         return false;
     }
@@ -40,8 +41,8 @@ bool isPrime(long long n) {
     return true;
 }
 
-vector<long long> findPrimeFactors(long long n) {
-    vector<long long> primeFactors;
+std::vector<long long> findPrimeFactors(long long n) {
+    std::vector<long long> primeFactors;
     for (int i = 2; i <= n/2; i++) {
         if (n % i == 0 && isPrime(i) && isPrime(n/i) && i != (n/i)) {           //make sure both factors are prime and are not equal to each other
             primeFactors.push_back(i);  
@@ -64,33 +65,36 @@ long long modularMultiplication(long long c, long long d, long long n) {
     long long result = 0;
     c %= n;
     while (d > 0) {
-        if (d & 1) {                                                        //check if d is odd, if so take it out and use recurrence
+        if (d & 1) {        //check if d is odd, if so take it out and use recurrence
             result = (result + c) % n;
         }
         c = (2 * c) % n;
-        d >>= 1;                                                            //shift is equivalent to dividing by two, more efficient for big numbers
+        d >>= 1;        //shift is equivalent to dividing by two, more efficient for big numbers
     }
     return result;
 }
 
 long long decrypt(long long c, long long d, long long n) {           //Use recurrence recursively to make sure number doesnt get too big for large exponents
+    // Base cases
     if (d == 0)
         return 1;
     if (d == 1)
         return c % n;
+    
     long long halfPower = decrypt(c, d >> 1, n);                         //divide d by two to get 'half power' and square d instead
     long long halfPowerSquared = modularMultiplication(halfPower, halfPower, n);
-    if (d & 1) {                                                        //if exponent is odd, take it out to be even and run even algorithm
+    
+    // If the exponent is odd
+    if (d & 1) {
         return modularMultiplication(halfPowerSquared, c, n);
     }
+    
     return halfPowerSquared;
 }
 
 int main()
 {   
     long long e, n, m, p, q, phiN, d, c;
-    string cipherText;
-    vector<long long> cipherNumbers;
     
 
     //Part (i)
@@ -133,57 +137,19 @@ int main()
 
     //Part (vi)
     vector<long long> factorsN = findPrimeFactors(n);
+    vector<long long> factorsN = findPrimeFactors(n);
     p = factorsN[0];
     q = factorsN[1];
     phiN =  (p-1)*(q-1);
     d = modInverse(e, phiN);
-    cout  << p << " " << q << " " << phiN << " " << d << " " << endl;
-    long long decrypted; 
+    cout << "p: " << p << " and q: " << q << endl;
+    cout << "phi(n): " << phiN << endl;
+    cout << "d: " << d << endl;
 
+    long long decrypted = decrypt(c, d, n);
 
-    cout << "Decrypted message as numbers " << endl;
-    for (long long cipherNumber : cipherNumbers){
-        decrypted = decrypt(cipherNumber, d, n);
-        cout << decrypted << " ";
-    }
-    cout << endl;
+    cout << "Decrypted int: " << decrypted << endl;
+    
 
-    for (long long cipherNumber : cipherNumbers){
-        decrypted = decrypt(cipherNumber, d, n);
-        switch(decrypted){
-        case(7): cout << 'A' ; break;
-        case(8): cout << 'B' ; break;
-        case(9): cout << 'C' ; break;
-        case(10): cout << 'D' ; break;
-        case(11): cout << 'E' ; break;
-        case(12): cout << 'F' ; break;
-        case(13): cout << 'G' ; break;
-        case(14): cout << 'H' ; break;
-        case(15): cout << 'I' ; break;
-        case(16): cout << 'J' ; break;
-        case(17): cout << 'K' ; break;
-        case(18): cout << 'L' ; break;
-        case(19): cout << 'M' ; break;
-        case(20): cout << 'N' ; break;
-        case(21): cout << 'O' ; break;
-        case(22): cout << 'P' ; break;
-        case(23): cout << 'Q' ; break;
-        case(24): cout << 'R' ; break;
-        case(25): cout << 'S' ; break;
-        case(26): cout << 'T' ; break;
-        case(27): cout << 'U' ; break;
-        case(28): cout << 'V' ; break;
-        case(29): cout << 'W' ; break;
-        case(30): cout << 'X' ; break;
-        case(31): cout << 'Y' ; break;
-        case(32): cout << 'Z' ; break;
-        case(33): cout << ' ' ; break;
-        case(34): cout << '"' ; break;
-        case(35): cout << ',' ; break;
-        case(36): cout << '.' ; break;
-        case(37): cout << "'"; break;
-        }
-    }
-    cout << endl;
     return 0;
 }
