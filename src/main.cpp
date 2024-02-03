@@ -107,11 +107,8 @@ int main()
     getline(cin, cipherText);
 
     //Part (ii)
-    if(is_valid(e,n)){
-        cout << "The public key you have entered is VALID!" << endl;
-    }
-    else{
-        cout << "INVALID PUBLIC KEY!!!" << endl;
+    if(!is_valid(e,n)){
+       cout << "Public key is not valid!" << endl;
         return 0;                                                               //quit if invalid
     }
 
@@ -142,6 +139,7 @@ int main()
         decrypted = decrypt(cipherNumber, d, n);
         cout << decrypted << " ";
     }
+    cout << endl;
 
     for (long long cipherNumber : cipherNumbers){
         decrypted = decrypt(cipherNumber, d, n);
