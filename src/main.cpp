@@ -29,8 +29,6 @@ bool is_valid(long e, long n){
 }
 
 bool isPrime(long long n) {
-bool isPrime(long long n) {
-bool isPrime(long long n) {
     if (n <= 1) {
         return false;
     }
