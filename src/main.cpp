@@ -27,7 +27,7 @@ bool is_valid(long e, long n){
     return true;
 }
 
-bool isPrime(int n) {
+bool isPrime(long long n) {
     if (n <= 1) {
         return false;
     }
@@ -39,8 +39,8 @@ bool isPrime(int n) {
     return true;
 }
 
-std::vector<int> findPrimeFactors(int n) {
-    std::vector<int> primeFactors;
+std::vector<long long> findPrimeFactors(long long n) {
+    std::vector<long long> primeFactors;
     for (int i = 2; i <= n/2; i++) {
         if (n % i == 0 && isPrime(i) && isPrime(n/i) && i != (n/i)) { //make sure both factors are prime and are not equal to each other
             primeFactors.push_back(i);  
@@ -60,32 +60,40 @@ long long modInverse(long long e, long long phiN) {
     return d;
 }
 
-int decrypt(int c, int d, int n) {
-    int answer = 1;
-    c = c % n;
+long long modularMultiplication(long long c, long long d, long long n) {
+    long long result = 0;
+    c %= n;
     while (d > 0) {
-        if (d % 2 == 1) {
-            answer = (answer*c) % n;
+        if (d & 1) {        //check if d is odd, if so take it out and use recurrence
+            result = (result + c) % n;
         }
-        c = (c * c) % n;
-        d /= 2;
+        c = (2 * c) % n;
+        d >>= 1;        //shift is equivalent to dividing by two, more efficient for big numbers
     }
-    return answer;
+    return result;
+}
+
+long long decrypt(long long c, long long d, long long n) {           //Use recurrence recursively to make sure number doesnt get too big for large exponents
+    // Base cases
+    if (d == 0)
+        return 1;
+    if (d == 1)
+        return c % n;
+    
+    long long halfPower = decrypt(c, d >> 1, n);                         //divide d by two to get 'half power' and square d instead
+    long long halfPowerSquared = modularMultiplication(halfPower, halfPower, n);
+    
+    // If the exponent is odd
+    if (d & 1) {
+        return modularMultiplication(halfPowerSquared, c, n);
+    }
+    
+    return halfPowerSquared;
 }
 
 int main()
 {   
-
-    // int e = 7;
-    // int n = 4453;
-    // int p = 61;
-    // int q = 73; 
-    // int phiN = 4320;
-    // int d = 3703;
-    // int m = 0;
-    int e, n, m, p, q, phiN, d;
-    int c;
-    long long decrypted;
+    long long e, n, m, p, q, phiN, d, c;
     
 
     //Part (i)
@@ -108,7 +116,7 @@ int main()
     cin >> c;
 
     //Part (vi)
-    vector<int> factorsN = findPrimeFactors(n);
+    vector<long long> factorsN = findPrimeFactors(n);
     p = factorsN[0];
     q = factorsN[1];
     phiN =  (p-1)*(q-1);
@@ -117,8 +125,9 @@ int main()
     cout << "phi(n): " << phiN << endl;
     cout << "d: " << d << endl;
 
-    // decrypted = (c, d, n);
-    // cout << "Decrypted int: " << decrypted << endl;
+    long long decrypted = decrypt(c, d, n);
+
+    cout << "Decrypted int: " << decrypted << endl;
     
 
     return 0;
