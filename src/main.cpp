@@ -40,21 +40,6 @@ bool isPrime(long long n) {
     return true;
 }
 
-bool isSemiPrime(long long n) {
-    int count = 0;
-    for (long long i = 2; count < 2 && i * i <= n; ++i) {
-        while (n % i == 0) {
-            n /= i;
-            count++;
-        }
-    }
-    if (n > 1) {
-        count++;
-    }
-    return count == 2;
-}
-
-
 vector<long long> findPrimeFactors(long long n) {
     vector<long long> primeFactors;
     for (int i = 2; i <= n/2; i++) {
@@ -67,31 +52,13 @@ vector<long long> findPrimeFactors(long long n) {
     return primeFactors;
 }
 
-long long extendedGCD(long long a, long long b, long long &x, long long &y) {
-    if (b == 0) {
-        x = 1;
-        y = 0;
-        return a;
-    }
-    long long x1, y1;
-    long long gcd = extendedGCD(b, a % b, x1, y1);
-    x = y1;
-    y = x1 - (a / b) * y1;
-    return gcd;
-}
-
 long long modInverse(long long e, long long phiN) {
-    long long x, y;
-    long long g = extendedGCD(e, phiN, x, y);
-    if (g != 1) {
-        cout << "Inverse does not exist!";
-        return -1; // Inverse does not exist
-    } else {
-        // Make x positive
-        return (x % phiN + phiN) % phiN;
+    long long d = 0;
+    while ((e * d) % phiN != 1) {                                               //continue incrementing d until the product is congruent to 1 mod phi of n
+        d++;
     }
+    return d;
 }
-
 
 long long modularMultiplication(long long c, long long d, long long n) {
     long long result = 0;
@@ -140,7 +107,7 @@ int main()
     getline(cin, cipherText);
 
     //Part (ii)
-    if(!is_valid(e,n)|| !isSemiPrime(n)){
+    if(!is_valid(e,n)){
        cout << "Public key is not valid!" << endl;
         return 0;                                                               //quit if invalid
     }
