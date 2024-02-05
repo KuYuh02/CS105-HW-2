@@ -130,7 +130,6 @@ int main()
     //cout << "Enter ciphertext (c): ";
     getline(cin, cipherText);
 
-    //Part (ii)
    
 
     //get ciphertext and convert the string input into integer for the decrypt algorithm to decrypt
@@ -157,6 +156,7 @@ int main()
     p = factorsN[0];
     q = factorsN[1];
     phiN =  (p-1)*(q-1);
+    //Part (ii)
     if(!is_valid(e,phiN)){
         cout << "Public key is not valid!";
         return 0;                                                               //quit if invalid
