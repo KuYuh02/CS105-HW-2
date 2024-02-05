@@ -17,12 +17,12 @@ long gcd(long a, long b) {
     return a;
 }
 
-bool is_valid(long e, long n){
-    if(e < 2 || e >= n){
+bool is_valid(long e, long phiN){
+    if(e < 2 || e >= phiN){
         return false;
     }
 
-    if(gcd(e,n) != 1) {
+    if(gcd(e,phiN) != 1) {
         return false;
     }
     return true;
@@ -42,22 +42,44 @@ bool isPrime(long long n) {
 
 vector<long long> findPrimeFactors(long long n) {
     vector<long long> primeFactors;
-    for (int i = 2; i <= n/2; i++) {
-        if (n % i == 0 && isPrime(i) && isPrime(n/i) && i != (n/i)) {           //make sure both factors are prime and are not equal to each other
-            primeFactors.push_back(i);  
-            primeFactors.push_back(n/i);                                       //get second prime number by diving first by n
-            break;                                                             // We only need two prime factors
+    if (n % 2 == 0) {
+        primeFactors.push_back(2);
+        primeFactors.push_back(n / 2);
+        return primeFactors;
+    }
+    for (long long i = 3; i <= sqrt(n); i += 2) {
+        if (n % i == 0) {
+            primeFactors.push_back(i);
+            primeFactors.push_back(n / i);
+            return primeFactors;
         }
     }
+    primeFactors.push_back(1);
+    primeFactors.push_back(n);
     return primeFactors;
 }
 
-long long modInverse(long long e, long long phiN) {
-    long long d = 0;
-    while ((e * d) % phiN != 1) {                                               //continue incrementing d until the product is congruent to 1 mod phi of n
-        d++;
+long long gcdExtended(long long a, long long b, long long *x, long long *y) {
+    if (a == 0) {
+        *x = 0;
+        *y = 1;
+        return b;
     }
-    return d;
+    long long x1, y1; 
+    long long gcd = gcdExtended(b % a, a, &x1, &y1);
+    *x = y1 - (b / a) * x1;
+    *y = x1;
+    return gcd;
+}
+
+long long modInverse(long long e, long long phiN) {
+    long long x, y;
+    long long g = gcdExtended(e, phiN, &x, &y);
+    if (g != 1) {
+        return -1;
+    } else {
+        return (x % phiN + phiN) % phiN;
+    }
 }
 
 long long modularMultiplication(long long c, long long d, long long n) {
@@ -73,17 +95,19 @@ long long modularMultiplication(long long c, long long d, long long n) {
     return result;
 }
 
-long long decrypt(long long c, long long d, long long n) {           //Use recurrence recursively to make sure number doesnt get too big for large exponents
+long long decrypt(long long c, long long d, long long n) {
     if (d == 0)
         return 1;
     if (d == 1)
         return c % n;
-    long long halfPower = decrypt(c, d >> 1, n);                         //divide d by two to get 'half power' and square d instead
-    long long halfPowerSquared = modularMultiplication(halfPower, halfPower, n);
-    if (d & 1) {                                                        //if exponent is odd, take it out to be even and run even algorithm
+    if (d % 2 == 0) {
+        long long halfPower = decrypt(c, d / 2, n);
+        return modularMultiplication(halfPower, halfPower, n);
+    } else {
+        long long halfPower = decrypt(c, d / 2, n);
+        long long halfPowerSquared = modularMultiplication(halfPower, halfPower, n);
         return modularMultiplication(halfPowerSquared, c, n);
     }
-    return halfPowerSquared;
 }
 
 int main()
@@ -101,28 +125,30 @@ int main()
 
 
     //cout << "Enter m (the number of characters in the message): " << endl;
-    cin >> m;
+    cin >> m;\
     cin.ignore();
     //cout << "Enter ciphertext (c): ";
     getline(cin, cipherText);
 
     //Part (ii)
-    if(!is_valid(e,n)){
-       cout << "Public key is not valid!" << endl;
-        return 0;                                                               //quit if invalid
-    }
+   
 
     //get ciphertext and convert the string input into integer for the decrypt algorithm to decrypt
     string token;
+    bool inToken = false;
     for (char c : cipherText) {
         if (isdigit(c)) {
             token += c;
-        } else if (!token.empty()) {
+            inToken = true;
+        } 
+        else if (inToken) {
             cipherNumbers.push_back(stoi(token));
             token.clear();
+            inToken = false;
         }
+    
     }
-    if (!token.empty()) {
+    if (inToken) {
         cipherNumbers.push_back(stoi(token));
     }
 
@@ -131,16 +157,20 @@ int main()
     p = factorsN[0];
     q = factorsN[1];
     phiN =  (p-1)*(q-1);
+    if(!is_valid(e,phiN)){
+        cout << "Public key is not valid!";
+        return 0;                                                               //quit if invalid
+    }
     d = modInverse(e, phiN);
-    cout  << p << " " << q << " " << phiN << " " << d << " " << endl;
+    cout  << p << " " << q << " " << phiN << " " << d << "\n";
     long long decrypted; 
 
     for (long long cipherNumber : cipherNumbers){
         decrypted = decrypt(cipherNumber, d, n);
         cout << decrypted << " ";
     }
-    cout << endl;
 
+    cout << "\n";
     for (long long cipherNumber : cipherNumbers){
         decrypted = decrypt(cipherNumber, d, n);
         switch(decrypted){
@@ -177,6 +207,6 @@ int main()
         case(37): cout << "'"; break;
         }
     }
-    cout << endl;
+    //cout << "\n";
     return 0;
 }
